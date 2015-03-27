@@ -1,0 +1,41 @@
+server 
+{
+    listen 172.31.25.95:80;
+    #listen 80;
+    #server_name api.tribemen.com; 
+    root /home/ec2-user/system/backend/app/src/www/; 
+    charset utf-8;
+    access_log logs/access_cloudsvc_api_log combinedio;
+    error_log logs/error_cloudsvc_api_log;
+    error_page 404 = /404; 
+    index intf.php;
+
+    client_body_temp_path /dev/shm/client_body_temp 1 2;
+    fastcgi_temp_path   /dev/shm/fastcgi_temp 1 2;
+
+    gzip              on;
+    gzip_buffers      16 8k;
+    gzip_comp_level   9;
+    gzip_min_length   1024;
+    gzip_types        text/plain application/x-javascript text/css application/xml text/xml;
+    gzip_vary         on;
+    client_max_body_size 8m;
+
+    location ~ .*\.(php|php5)?$ 
+    {
+        fastcgi_pass 127.0.0.1:9000;
+        include fastcgi.conf;
+        fastcgi_param  SERVER_TYPE user;
+        fastcgi_param  PROJECT_INCLUDE_PATH  ".:/home/q/system/cloudsvc/app/config/:/usr/local/php/lib/php:/home/q/php";
+    }
+
+    location ~*(status\.html)$ {
+        root    /home/q/system/cloudsvc/app/src/www/;
+        rewrite ^/status.html$ /status.php last;
+    }
+
+    location /404
+    {
+        return 500;
+    }
+}
