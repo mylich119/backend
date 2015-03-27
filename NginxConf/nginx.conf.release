@@ -5,7 +5,6 @@ server
     #server_name api.tribemen.com; 
     root /home/ec2-user/system/backend/app/src/www/; 
     charset utf-8;
-    access_log logs/access_cloudsvc_api_log combinedio;
     error_log logs/error_cloudsvc_api_log;
     error_page 404 = /404; 
     index intf.php;
